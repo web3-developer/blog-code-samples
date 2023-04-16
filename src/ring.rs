@@ -1,2 +1,2 @@
-mod hashes;
+mod digest;
 mod hmac;

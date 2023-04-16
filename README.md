@@ -1,11 +1,11 @@
 # blog-code-samples
 
-To run code samples:
+### Run Code Samples
 ```shell
 cargo test --lib
 ```
 
-To run code samples showing stdout:
+### Run Code Samples Printing stdout
 ```shell
 cargo test --lib -- --nocapture
 ```
