@@ -1,14 +1,7 @@
 // https://github.com/briansmith/ring
 
-
-// SystemRandom implements SecureRandom and supports creating a new instance with new
-// Random is a struct that holds a T which implements RandomlyConstructable
-// SecureRandom declares a fill method which supports filling a destination array with random bytes
-// generate function takes a SecureRandom obj and returns a type that implements RandomlyConstructable
-
 // Blog structure
-// Background theory on random number generators and secure random number generators
-// Explanation of the structs, traits and functions in the rand module and how they relate to each other
+
 // Example 1
 // Example 2
 
