@@ -18,6 +18,8 @@ mod tests {
 
     #[test]
     fn run() {
+        // scenario 1 - generate single output key
+
         let input_key_material = b"secret key";
         println!("Input key material: {}", hex::encode(input_key_material));
 
@@ -42,10 +44,10 @@ mod tests {
         let mut result = [0u8; SHA256_OUTPUT_LEN];
         output_key_material.fill(&mut result).unwrap();
         println!("Derived output key material: {}", hex::encode(result));
-    }
 
-    #[test]
-    fn run_expand_larger_len() {
+
+        // scenario 2 - generate multiple output keys
+
         const NUM_OF_KEYS: usize = 3;
         const OUTPUT_KEY_SIZE: usize = NUM_OF_KEYS * SHA256_OUTPUT_LEN;
 
@@ -57,24 +59,15 @@ mod tests {
             }
         }
 
-        let input_key_material = b"secret key";
-        println!("Input key material: {}", hex::encode(input_key_material));
-
-        // Constructs a new Salt with the given value based on the given digest algorithm
-        let salt = Salt::new(HKDF_SHA256, b"salt bytes");
-
-        // The HKDF-Extract operation
-        let pseudo_rand_key: Prk = salt.extract(input_key_material);
-
         // The HKDF-Expand operation
         let context_data = &["context one".as_bytes()];
         let output_key_material: Okm<MyKeyType> = pseudo_rand_key.expand(context_data, MyKeyType(OUTPUT_KEY_SIZE)).unwrap();
 
         let mut result = [0u8; OUTPUT_KEY_SIZE];
         output_key_material.fill(&mut result).unwrap();
-        println!("Derived output key material: {}", hex::encode(&result[0..32]));
-        println!("Derived output key material: {}", hex::encode(&result[32..64]));
-        println!("Derived output key material: {}", hex::encode(&result[64..96]));
+        println!("Derived output key 1: {}", hex::encode(&result[0..32]));
+        println!("Derived output key 2: {}", hex::encode(&result[32..64]));
+        println!("Derived output key 3: {}", hex::encode(&result[64..96]));
     }
 
 }

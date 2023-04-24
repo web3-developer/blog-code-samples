@@ -28,12 +28,14 @@ mod tests {
         println!("{:?}", sha512_digest.algorithm());
         println!("{}", hex::encode(sha512_digest.as_ref()));
 
+
         // sha-256 using Context struct
         let mut ctx = Context::new(&SHA256);
         ctx.update(b"hello");
         ctx.update(b", ");
         ctx.update(b"world");
         let ctx_digest = ctx.finish();
+
         println!("{:?}", ctx_digest.algorithm());
         println!("{}", hex::encode(ctx_digest.as_ref()));
     }

@@ -9,6 +9,8 @@ mod tests {
 
     #[test]
     fn run() {
+        // scenario 1 - simple sign and verify of a message
+
         // Create a secure random number generator
         let rng = rand::SystemRandom::new();
 
@@ -26,15 +28,9 @@ mod tests {
 
         // Verify the integrity of the message - failure case
         //hmac::verify(&key, "This is the message to be signed - but altered".as_bytes(), tag.as_ref()).unwrap();
-    }
 
-    #[test]
-    fn run_multipart() {
-        // Create a secure random number generator
-        let rng = rand::SystemRandom::new();
 
-        // Generate the hmac signing key
-        let key = hmac::Key::generate(hmac::HMAC_SHA512, &rng).unwrap();
+        // scenario 2 - sign and verify a multi-part message
 
         // Create a message to be signed
         let msg = ["hello", ", ", "world"];
@@ -46,7 +42,6 @@ mod tests {
         }
         let tag = context.sign();
 
-        // concat the message data
         let mut msg_data = Vec::<u8>::new();
         for str in &msg {
             msg_data.extend(str.as_bytes());
