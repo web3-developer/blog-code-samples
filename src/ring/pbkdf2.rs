@@ -20,6 +20,7 @@ mod tests {
         // scenario 1 - PBKDF2_HMAC_SHA256
         const PBKDF2_HMAC_SHA256_ITERATIONS: u32 = 600_000; // number recommended by OWASP for PBKDF2 with SHA256
 
+        // Prepare iterations, salt and secret
         let iterations = NonZeroU32::new(PBKDF2_HMAC_SHA256_ITERATIONS).unwrap();
         let salt = b"random salt"; // this should be randomly generated, using some user specific component and database specific component
         let secret = b"strong password"; // select a strong password
@@ -30,7 +31,7 @@ mod tests {
         pbkdf2::derive(PBKDF2_HMAC_SHA256, iterations, salt, secret, &mut password_hash);
         println!("Password hash: {}", hex::encode(password_hash)); // don't print this in production
 
-        // Verify the whether or not a password matches the stored password hash
+        // Verify whether or not a password matches the stored password hash
         pbkdf2::verify(PBKDF2_HMAC_SHA256, iterations, salt, secret, &password_hash).unwrap(); // success case
         //pbkdf2::verify(PBKDF2_HMAC_SHA256, iterations, salt, "wrong password".as_bytes(), &password_hash).unwrap(); // failure case
 
@@ -38,8 +39,9 @@ mod tests {
         // scenario 2 - PBKDF2_HMAC_SHA512
         const PBKDF2_HMAC_SHA512_ITERATIONS: u32 = 210_000; // number recommended by OWASP for PBKDF2 with SHA512
 
+        // Prepare iterations, salt and secret
         let iterations = NonZeroU32::new(PBKDF2_HMAC_SHA512_ITERATIONS).unwrap();
-        let salt = b"random salt"; // this should be randomly generated
+        let salt = b"random salt"; // this should be randomly generated, using some user specific component and database specific component
         let secret = b"strong password"; // select a strong password
         println!("Secret/password value: {}", hex::encode(secret)); // don't print this in production
 
@@ -48,7 +50,7 @@ mod tests {
         pbkdf2::derive(PBKDF2_HMAC_SHA512, iterations, salt, secret, &mut password_hash);
         println!("Password hash: {}", hex::encode(password_hash)); // don't print this in production
 
-        // Verify the whether or not a password matches a the stored password hash
+        // Verify whether or not a password matches the stored password hash
         pbkdf2::verify(PBKDF2_HMAC_SHA512, iterations, salt, secret, &password_hash).unwrap(); // success case
         //pbkdf2::verify(PBKDF2_HMAC_SHA512, iterations, salt, "wrong password".as_bytes(), &password_hash).unwrap(); // failure case
     }
