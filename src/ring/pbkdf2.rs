@@ -17,7 +17,7 @@ mod tests {
 
     #[test]
     fn run() {
-        // scenario 1 - PBKDF2_HMAC_SHA256
+        // Scenario 1 - PBKDF2_HMAC_SHA256
         const PBKDF2_HMAC_SHA256_ITERATIONS: u32 = 600_000; // number recommended by OWASP for PBKDF2 with SHA256
 
         // Prepare iterations, salt and secret
@@ -36,7 +36,7 @@ mod tests {
         //pbkdf2::verify(PBKDF2_HMAC_SHA256, iterations, salt, "wrong password".as_bytes(), &password_hash).unwrap(); // failure case
 
 
-        // scenario 2 - PBKDF2_HMAC_SHA512
+        // Scenario 2 - PBKDF2_HMAC_SHA512
         const PBKDF2_HMAC_SHA512_ITERATIONS: u32 = 210_000; // number recommended by OWASP for PBKDF2 with SHA512
 
         // Prepare iterations, salt and secret

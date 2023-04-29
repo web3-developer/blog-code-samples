@@ -9,7 +9,7 @@ mod tests {
 
     #[test]
     fn run() {
-        // scenario 1 - simple sign and verify of a message
+        // Scenario 1 - simple sign and verify of a message
 
         // Create a secure random number generator
         let rng = rand::SystemRandom::new();
@@ -30,7 +30,7 @@ mod tests {
         //hmac::verify(&key, "This is the message to be signed - but altered".as_bytes(), tag.as_ref()).unwrap();
 
 
-        // scenario 2 - sign and verify a multi-part message
+        // Scenario 2 - sign and verify a multi-part message
 
         // Create a message to be signed
         let msg = ["hello", ", ", "world"];

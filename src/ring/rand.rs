@@ -20,22 +20,23 @@ mod tests {
         // Create a secure random number generator
         let sys_random = SystemRandom::new();
 
-        // initialise a buffer with zeros
+        // Initialise a buffer with zeros
         let mut buffer = [0u8; 4];
 
-        // fill the buffer with random bytes
+        // Fill the buffer with random bytes
         sys_random.fill(&mut buffer).unwrap();
         println!("{:?}", buffer);
         println!("{:?}", u32::from_be_bytes(buffer));
 
-        // generate the random number
+        // Generate the random number
         let result : Random<[u8; 4]> = rand::generate(&sys_random).unwrap();
-        // get the value
+
+        // Get the value
         let rand_bytes = result.expose(); // can only be called once
         println!("{:?}", rand_bytes);
         println!("{:?}", u32::from_be_bytes(rand_bytes));
 
-        // generate more random numbers using the same SystemRandom object
+        // Generate more random numbers using the same SystemRandom object
         let result : Random<[u8; 4]> = rand::generate(&sys_random).unwrap();
         let rand_bytes = result.expose();
         println!("{:?}", rand_bytes);

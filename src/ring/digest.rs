@@ -13,23 +13,23 @@ mod tests {
 
     #[test]
     fn run() {
-        // sha-1 (deprecated) using digest function
+        // SHA-1 (deprecated) using digest function
         let sha1_digest: Digest = digest(&SHA1_FOR_LEGACY_USE_ONLY, b"hello, world");
         println!("{:?}", sha1_digest.algorithm());
         println!("{}", hex::encode(sha1_digest.as_ref()));
 
-        // sha-256 using digest function
+        // SHA-256 using digest function
         let sha256_digest: Digest = digest(&SHA256, b"hello, world");
         println!("{:?}", sha256_digest.algorithm());
         println!("{}", hex::encode(sha256_digest.as_ref()));
 
-        // sha-512 using digest function
+        // SHA-512 using digest function
         let sha512_digest: Digest = digest(&SHA512, b"hello, world");
         println!("{:?}", sha512_digest.algorithm());
         println!("{}", hex::encode(sha512_digest.as_ref()));
 
 
-        // sha-256 using Context struct
+        // SHA-256 using Context struct
         let mut ctx = Context::new(&SHA256);
         ctx.update(b"hello");
         ctx.update(b", ");

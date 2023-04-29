@@ -18,7 +18,7 @@ mod tests {
 
     #[test]
     fn run() {
-        // scenario 1 - generate single output key
+        // Scenario 1 - generate single output key
 
         let input_key_material = b"secret key";
         println!("Input key material: {}", hex::encode(input_key_material));
@@ -37,7 +37,7 @@ mod tests {
         output_key_material.fill(&mut result).unwrap();
         println!("Derived output key material: {}", hex::encode(result));
 
-        // second call with different context data produces a different output
+        // Second call with different context data produces a different output
         let context_data = &["context two".as_bytes()];
         let output_key_material: Okm<Algorithm> = pseudo_rand_key.expand(context_data, HKDF_SHA256).unwrap();
 
@@ -46,7 +46,7 @@ mod tests {
         println!("Derived output key material: {}", hex::encode(result));
 
 
-        // scenario 2 - generate multiple output keys
+        // Scenario 2 - generate multiple output keys
 
         const NUM_OF_KEYS: usize = 3;
         const OUTPUT_KEY_SIZE: usize = NUM_OF_KEYS * SHA256_OUTPUT_LEN;
