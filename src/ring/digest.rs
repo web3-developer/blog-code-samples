@@ -4,9 +4,9 @@
 mod tests {
     //use super::*;
 
+    use ring::digest::digest;
     use ring::digest::Digest;
     use ring::digest::Context;
-    use ring::digest::digest;
     use ring::digest::SHA1_FOR_LEGACY_USE_ONLY;
     use ring::digest::SHA256;
     use ring::digest::SHA512;
