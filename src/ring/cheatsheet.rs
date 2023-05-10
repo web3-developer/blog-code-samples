@@ -39,7 +39,7 @@ mod tests {
         println!("rand_bytes = {}", hex::encode(rand_bytes));
 
         // Generate random number using the rand::generate function
-        let result : Random<[u8; NUM_SIZE_BYTES]> = rand::generate(&sys_random).unwrap();
+        let result: Random<[u8; NUM_SIZE_BYTES]> = rand::generate(&sys_random).unwrap();
         let rand_bytes = result.expose();
         println!("rand_bytes = {}", hex::encode(rand_bytes));
     }

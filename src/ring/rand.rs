@@ -1,10 +1,5 @@
 // https://github.com/briansmith/ring
 
-// Blog structure
-
-// Example 1
-// Example 2
-
 
 #[cfg(test)]
 mod tests {
@@ -29,7 +24,7 @@ mod tests {
         println!("{:?}", u32::from_be_bytes(buffer));
 
         // Generate the random number
-        let result : Random<[u8; 4]> = rand::generate(&sys_random).unwrap();
+        let result: Random<[u8; 4]> = rand::generate(&sys_random).unwrap();
 
         // Get the value
         let rand_bytes = result.expose(); // can only be called once

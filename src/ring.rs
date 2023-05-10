@@ -2,6 +2,7 @@ mod aead;
 mod agreement;
 mod cheatsheet;
 mod digest;
+mod fluent_hash;
 mod hkdf;
 mod hmac;
 mod pbkdf2;
