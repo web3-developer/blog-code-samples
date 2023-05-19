@@ -51,8 +51,7 @@ mod tests {
                             // As recommended in RFC 7748 we should apply a KDF on the key material here before using in a real application
                             // We can return the derived key from the kdf here, otherwise we just return () if the key isn't needed outside this scope
                             Ok(())
-                        },
-        )
+                        })
     }
 
 
@@ -109,8 +108,7 @@ mod tests {
                             // As recommended in RFC 7748 we should apply a KDF on the key material here before using in a real application
                             // We can return the derived key from the kdf here, otherwise we just return () if the key isn't needed outside this scope
                             Ok(())
-                        },
-        )
+                        })
     }
 
 }
