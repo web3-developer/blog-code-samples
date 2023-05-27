@@ -6,7 +6,6 @@ mod tests {
 
     use ring::error::Unspecified;
     use ring::rand::SystemRandom;
-    use ring::signature;
     use ring::signature::ECDSA_P256_SHA256_ASN1;
     use ring::signature::ECDSA_P256_SHA256_ASN1_SIGNING;
     use ring::signature::ED25519;

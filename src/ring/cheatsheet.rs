@@ -51,13 +51,13 @@ mod tests {
 
     #[test]
     fn run_hmac() -> Result<(), Unspecified> {
-        use ring::rand;
+        use ring::rand::SystemRandom;
         use ring::hmac;
         use ring::hmac::Key;
         use ring::hmac::Context;
         use ring::hmac::HMAC_SHA256;
 
-        let sys_random = rand::SystemRandom::new();
+        let sys_random = SystemRandom::new();
         let key = Key::generate(HMAC_SHA256, &sys_random)?;
 
         // Sign a message and then verify using the hmac::sign function
@@ -128,12 +128,12 @@ mod tests {
     #[test]
     fn run_agreement() -> Result<(), Unspecified> {
         use ring::rand::SystemRandom;
+        use ring::agreement;
         use ring::agreement::Algorithm;
         use ring::agreement::X25519;
         use ring::agreement::EphemeralPrivateKey;
         use ring::agreement::PublicKey;
         use ring::agreement::UnparsedPublicKey;
-        use ring::agreement::agree_ephemeral;
 
         // Derived a shared secret using ECDH
 
@@ -153,7 +153,7 @@ mod tests {
         println!("peer_public_key = {}", hex::encode(peer_public_key.as_ref()));
 
         let peer_public_key = UnparsedPublicKey::new(alg, peer_public_key);
-        agree_ephemeral(my_private_key,
+        agreement::agree_ephemeral(my_private_key,
                         &peer_public_key,
                         Unspecified,
                         |shared_secret: &[u8]| {
@@ -164,8 +164,25 @@ mod tests {
     }
 
     #[test]
-    fn run_signature() {
+    fn run_signature() -> Result<(), Unspecified> {
+        use ring::rand::SystemRandom;
+        use ring::signature::ED25519;
+        use ring::signature::KeyPair;
+        use ring::signature::Ed25519KeyPair;
+        use ring::signature::UnparsedPublicKey;
 
+        // Sign and verify a message using EdDSA
+
+        let rand = SystemRandom::new();
+        let pkcs8_bytes = Ed25519KeyPair::generate_pkcs8(&rand)?;
+        let key_pair = Ed25519KeyPair::from_pkcs8(pkcs8_bytes.as_ref()).map_err(|_| Unspecified)?;
+
+        const MESSAGE: &[u8] = b"hello, world";
+        let sig = key_pair.sign(MESSAGE);
+
+        let peer_public_key_bytes = key_pair.public_key().as_ref();
+        let peer_public_key = UnparsedPublicKey::new(&ED25519, peer_public_key_bytes);
+        peer_public_key.verify(MESSAGE, sig.as_ref())
     }
 
     #[test]
