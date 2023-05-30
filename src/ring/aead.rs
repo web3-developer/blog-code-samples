@@ -21,13 +21,16 @@ mod tests {
     use ring::aead::NONCE_LEN;
     use ring::aead::Nonce;
 
+    // generally IV needs to be unique and unpredictable/random but not secret
+    // generally nonce needs to be unique but not unpredictable or secret
 
-    // nonces must be unique and never used twice
-    // the must be unpredictable? No
-    // max number per key?
+    // For the nonces used for AES-GCM nonces must be unique and never used twice but they don't need to be unpredictable
+    // max number of encryptions per key? Very large number 2^(12x8) - 1 encryption's if using counter nonce
+    // if using random nonce then 2^30 encryptions using the same key
     struct CounterNonceSequence(u32);
 
     impl NonceSequence for CounterNonceSequence {
+        // called once for each seal operation
         fn advance(&mut self) -> Result<Nonce, Unspecified> {
             self.0 += 1; // advance the counter
             let mut nonce_bytes = vec![0; NONCE_LEN];
