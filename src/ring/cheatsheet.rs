@@ -14,16 +14,14 @@ mod tests {
         use ring::digest::SHA256;
 
         // Calculate a hash using the digest function
-        let digest: Digest = digest::digest(&SHA256, b"hello, world");
-        println!("digest = {}", hex::encode(digest.as_ref()));
+        let _digest: Digest = digest::digest(&SHA256, b"hello, world");
 
         // Calculate a hash using the Context struct
         let mut ctx = Context::new(&SHA256);
         ctx.update(b"hello, ");
         ctx.update(b"world");
 
-        let digest = ctx.finish();
-        println!("digest = {}", hex::encode(digest.as_ref()));
+        let _digest = ctx.finish();
     }
 
     #[test]
@@ -34,17 +32,15 @@ mod tests {
         use ring::rand::Random;
 
         const NUM_SIZE_BYTES: usize = 32;
-        let sys_random = SystemRandom::new();
+        let rand = SystemRandom::new();
 
         // Generate random number using the SecureRandom::fill method
         let mut rand_bytes = [0u8; NUM_SIZE_BYTES];
-        sys_random.fill(&mut rand_bytes)?;
-        println!("rand_bytes = {}", hex::encode(rand_bytes));
+        rand.fill(&mut rand_bytes)?;
 
         // Generate random number using the rand::generate function
-        let result: Random<[u8; NUM_SIZE_BYTES]> = rand::generate(&sys_random)?;
-        let rand_bytes = result.expose();
-        println!("rand_bytes = {}", hex::encode(rand_bytes));
+        let result: Random<[u8; NUM_SIZE_BYTES]> = rand::generate(&rand)?;
+        let _rand_bytes = result.expose();
 
         Ok(())
     }
@@ -63,7 +59,6 @@ mod tests {
         // Sign a message and then verify using the hmac::sign function
         let tag = hmac::sign(&key, b"hello, world");
         hmac::verify(&key, b"hello, world", tag.as_ref())?;
-        println!("tag = {}", hex::encode(tag.as_ref()));
 
         // Sign a message and then verify using the Context struct
         let mut ctx = Context::with_key(&key);
@@ -72,7 +67,6 @@ mod tests {
         let tag = ctx.sign();
 
         hmac::verify(&key, b"hello, world", tag.as_ref())?;
-        println!("tag = {}", hex::encode(tag.as_ref()));
 
         Ok(())
     }
@@ -89,7 +83,6 @@ mod tests {
         // Derive a single output key using Salt::extract and Prk::expand
 
         let input_key_material = b"secret key";
-        println!("Input key material: {}", hex::encode(input_key_material)); // don't print this in production
 
         let salt = Salt::new(HKDF_SHA256, b"salt bytes");
         let pseudo_rand_key: Prk = salt.extract(input_key_material);
@@ -98,7 +91,6 @@ mod tests {
 
         let mut result = [0u8; SHA256_OUTPUT_LEN];
         output_key_material.fill(&mut result)?;
-        println!("Derived output key material: {}", hex::encode(result)); // don't print this in production
 
         Ok(())
     }
@@ -115,12 +107,10 @@ mod tests {
         let iterations = NonZeroU32::new(600_000).unwrap();
         let salt = b"random salt";
         let secret = b"strong password";
-        println!("Secret/password value: {}", hex::encode(secret)); // don't print this in production
 
         let mut password_hash = [0u8; SHA256_OUTPUT_LEN];
         pbkdf2::derive(PBKDF2_HMAC_SHA256, iterations, salt, secret, &mut password_hash);
         pbkdf2::verify(PBKDF2_HMAC_SHA256, iterations, salt, secret, &password_hash)?;
-        println!("Password hash: {}", hex::encode(password_hash)); // don't print this in production
 
         Ok(())
     }
@@ -141,8 +131,7 @@ mod tests {
         let alg: &Algorithm = &X25519;
 
         let my_private_key: EphemeralPrivateKey = EphemeralPrivateKey::generate(alg, &rng)?;
-        let my_public_key: PublicKey = my_private_key.compute_public_key()?;
-        println!("my_public_key = {}", hex::encode(my_public_key.as_ref()));
+        let _my_public_key: PublicKey = my_private_key.compute_public_key()?;
 
         // Send our public key to the peer here
 
@@ -150,14 +139,13 @@ mod tests {
             let peer_private_key = EphemeralPrivateKey::generate(alg, &rng)?;
             peer_private_key.compute_public_key()?
         };
-        println!("peer_public_key = {}", hex::encode(peer_public_key.as_ref()));
 
         let peer_public_key = UnparsedPublicKey::new(alg, peer_public_key);
         agreement::agree_ephemeral(my_private_key,
                         &peer_public_key,
                         Unspecified,
-                        |shared_secret: &[u8]| {
-                            println!("shared_secret = {}", hex::encode(shared_secret.as_ref())); // don't print this in production
+                        |_shared_secret: &[u8]| {
+                            // use the shared secret
                             Ok(())
                         })?;
         Ok(())
@@ -186,8 +174,58 @@ mod tests {
     }
 
     #[test]
-    fn run_aead() {
+    fn run_aead() -> Result<(), Unspecified> {
+        use ring::rand::SecureRandom;
+        use ring::rand::SystemRandom;
+        use ring::aead::AES_256_GCM;
+        use ring::aead::UnboundKey;
+        use ring::aead::BoundKey;
+        use ring::aead::SealingKey;
+        use ring::aead::OpeningKey;
+        use ring::aead::Aad;
+        use ring::aead::NonceSequence;
+        use ring::aead::NONCE_LEN;
+        use ring::aead::Nonce;
 
+        // always returns the same nonce value
+        struct SingleNonceSequence(u32);
+
+        impl NonceSequence for SingleNonceSequence {
+            fn advance(&mut self) -> Result<Nonce, Unspecified> {
+                let mut nonce_bytes = vec![0; NONCE_LEN];
+
+                let bytes = self.0.to_be_bytes();
+                nonce_bytes[8..].copy_from_slice(&bytes);
+                Nonce::try_assume_unique_for_key(&nonce_bytes)
+            }
+        }
+
+        // Encrypt and decrypt some data using AES-GCM-256
+
+        let rand = SystemRandom::new();
+        let mut key_bytes = vec![0; AES_256_GCM.key_len()];
+        rand.fill(&mut key_bytes)?;
+
+        let unbound_key = UnboundKey::new(&AES_256_GCM, &key_bytes)?;
+        let nonce_sequence = SingleNonceSequence(1234);
+        let mut sealing_key = SealingKey::new(unbound_key, nonce_sequence);
+
+        let associated_data = Aad::from(b"additional public data");
+        let data = b"hello world";
+        let mut in_out = data.clone();
+        let tag = sealing_key.seal_in_place_separate_tag(associated_data, &mut in_out)?;
+
+        let unbound_key = UnboundKey::new(&AES_256_GCM, &key_bytes)?;
+        let nonce_sequence = SingleNonceSequence(1234);
+        let mut opening_key = OpeningKey::new(unbound_key, nonce_sequence);
+
+        let associated_data = Aad::from(b"additional public data");
+        let mut cypher_text_with_tag = [&in_out, tag.as_ref()].concat();
+        let decrypted_data = opening_key.open_in_place( associated_data, &mut cypher_text_with_tag)?;
+
+        assert_eq!(data, decrypted_data);
+
+        Ok(())
     }
 
 }
