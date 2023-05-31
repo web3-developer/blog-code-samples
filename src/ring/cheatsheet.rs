@@ -66,9 +66,7 @@ mod tests {
         ctx.update(b"world");
         let tag = ctx.sign();
 
-        hmac::verify(&key, b"hello, world", tag.as_ref())?;
-
-        Ok(())
+        hmac::verify(&key, b"hello, world", tag.as_ref())
     }
 
     #[test]
@@ -90,9 +88,7 @@ mod tests {
         let output_key_material: Okm<Algorithm> = pseudo_rand_key.expand(&context_data, HKDF_SHA256)?;
 
         let mut result = [0u8; SHA256_OUTPUT_LEN];
-        output_key_material.fill(&mut result)?;
-
-        Ok(())
+        output_key_material.fill(&mut result)
     }
 
     #[test]
@@ -110,9 +106,7 @@ mod tests {
 
         let mut password_hash = [0u8; SHA256_OUTPUT_LEN];
         pbkdf2::derive(PBKDF2_HMAC_SHA256, iterations, salt, secret, &mut password_hash);
-        pbkdf2::verify(PBKDF2_HMAC_SHA256, iterations, salt, secret, &password_hash)?;
-
-        Ok(())
+        pbkdf2::verify(PBKDF2_HMAC_SHA256, iterations, salt, secret, &password_hash)
     }
 
     #[test]
@@ -147,8 +141,7 @@ mod tests {
                         |_shared_secret: &[u8]| {
                             // use the shared secret
                             Ok(())
-                        })?;
-        Ok(())
+                        })
     }
 
     #[test]
@@ -221,7 +214,7 @@ mod tests {
 
         let associated_data = Aad::from(b"additional public data");
         let mut cypher_text_with_tag = [&in_out, tag.as_ref()].concat();
-        let decrypted_data = opening_key.open_in_place( associated_data, &mut cypher_text_with_tag)?;
+        let decrypted_data = opening_key.open_in_place(associated_data, &mut cypher_text_with_tag)?;
 
         assert_eq!(data, decrypted_data);
 
