@@ -180,27 +180,26 @@ mod tests {
         use ring::aead::NONCE_LEN;
         use ring::aead::Nonce;
 
-        // always returns the same nonce value
-        struct SingleNonceSequence(u32);
+        // Always returns the same nonce value for simplicity, don't use for more than 1 sealing operation!
+        struct SingleNonceSequence([u8; NONCE_LEN]);
 
         impl NonceSequence for SingleNonceSequence {
             fn advance(&mut self) -> Result<Nonce, Unspecified> {
-                let mut nonce_bytes = vec![0; NONCE_LEN];
-
-                let bytes = self.0.to_be_bytes();
-                nonce_bytes[8..].copy_from_slice(&bytes);
-                Nonce::try_assume_unique_for_key(&nonce_bytes)
+                Nonce::try_assume_unique_for_key(&self.0)
             }
         }
 
         // Encrypt and decrypt some data using AES-GCM-256
 
         let rand = SystemRandom::new();
+
         let mut key_bytes = vec![0; AES_256_GCM.key_len()];
         rand.fill(&mut key_bytes)?;
+        let mut nonce_value = [0; NONCE_LEN];
+        rand.fill(&mut nonce_value)?;
 
         let unbound_key = UnboundKey::new(&AES_256_GCM, &key_bytes)?;
-        let nonce_sequence = SingleNonceSequence(1234);
+        let nonce_sequence = SingleNonceSequence(nonce_value);
         let mut sealing_key = SealingKey::new(unbound_key, nonce_sequence);
 
         let associated_data = Aad::from(b"additional public data");
@@ -209,7 +208,7 @@ mod tests {
         let tag = sealing_key.seal_in_place_separate_tag(associated_data, &mut in_out)?;
 
         let unbound_key = UnboundKey::new(&AES_256_GCM, &key_bytes)?;
-        let nonce_sequence = SingleNonceSequence(1234);
+        let nonce_sequence = SingleNonceSequence(nonce_value);
         let mut opening_key = OpeningKey::new(unbound_key, nonce_sequence);
 
         let associated_data = Aad::from(b"additional public data");
