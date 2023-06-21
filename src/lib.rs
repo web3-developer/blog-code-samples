@@ -1,2 +1,3 @@
+mod cryptopals;
 mod ring;
 

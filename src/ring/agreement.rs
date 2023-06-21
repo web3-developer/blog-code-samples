@@ -59,6 +59,7 @@ mod tests {
     use std::net::{TcpListener, TcpStream};
     use std::io::{Read, Write};
 
+    #[ignore]
     #[test]
     fn run_over_tcp() {
         let server = thread::spawn(move || {
