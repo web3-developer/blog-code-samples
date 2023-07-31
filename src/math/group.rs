@@ -10,10 +10,10 @@ impl Operation for Multiplication {}
 /// Associativity - a . (b . c) = (a . b) . c
 /// Identity - a . I = a
 pub trait Monoid<T: Operation, E> {
-    /// The group binary operation which takes elements e1 and e2 of type E and returns the result
+    /// The binary operation which takes elements e1 and e2 of type E and returns the result
     fn apply(&self, e1: E, e2: E) -> E;
 
-    /// Returns the group identity element
+    /// Returns the identity element
     fn identity(&self) -> E;
 }
 
@@ -26,7 +26,7 @@ pub trait Group<T: Operation, E> {
     /// The binary operation which takes elements e1 and e2 of type E and returns the result
     fn apply(&self, e1: E, e2: E) -> E;
 
-    /// Returns the group identity element
+    /// Returns the identity element
     fn identity(&self) -> E;
 
     /// Returns the inverse of element e
@@ -66,19 +66,30 @@ mod tests {
 
     use super::*;
 
-
     #[test]
     fn run_additive_integers() {
         let group = AdditiveIntegers();
 
-        let result = group.apply(1, 2);
-        assert_eq!(3, result);
+        let a: i32 = 10;
+        let b: i32 = 20;
+        let c: i32 = 30;
 
-        let result = group.identity();
-        assert_eq!(0, result);
+        // Closure - a . b = c where a, b, and c are in the set
+        let result: i32 = group.apply(a, b);
+        assert_eq!(c, result); // result is an integer so in the set
 
-        let result = group.inverse(1);
-        assert_eq!(-1, result);
+        // Associativity - a . (b . c) = (a . b) . c
+        assert_eq!(group.apply(a, group.apply(b, c)),
+                   group.apply(group.apply(a , b), c));
+
+        // Identity - a . I = a
+        assert_eq!(group.apply(a, group.identity()), a);
+
+        // Inverse - a . a^-1 = I
+        assert_eq!(group.apply(a, group.inverse(a)), group.identity());
+
+        // Commutativity - a . b = b . a
+        assert_eq!(group.apply(a, b), group.apply(b, a));
     }
 
 }
