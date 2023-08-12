@@ -10,7 +10,7 @@
 // Fermat's Little Theorem
 // Fermat's Last Theorem
 // chinese remainder theorem
-// primality testing
+
 mod group;
 mod ring;
 mod field;

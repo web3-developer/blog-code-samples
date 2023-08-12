@@ -100,20 +100,21 @@ mod tests {
     fn run_prime_field() {
         let field = PrimeField::new(11);
 
-        let result = field.add(3, 12);
-        assert_eq!(4, result);
+        let result = field.add(3, 10);
+        assert_eq!(2, result);
 
-        let result = field.subtract(15, 3);
-        assert_eq!(1, result);
+        let result = field.subtract(1, 3);
+        assert_eq!(9, result);
 
         let result = field.multiply(2, 10);
         assert_eq!(9, result);
 
-        let result = field.divide(22, 2);
-        assert_eq!(0, result);
+        let result = field.divide(10, 2);
+        assert_eq!(5, result);
 
+        // Every element in the field apart from zero has an inverse
         for i in 1..11 {
-            let _result = field.divide(22, i);
+            let _result = field.divide(10, i);
         }
     }
 
