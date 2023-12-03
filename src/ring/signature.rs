@@ -19,7 +19,7 @@ mod tests {
         // generate a new ECDSA key pair
         let rand = SystemRandom::new();
         let pkcs8_bytes = EcdsaKeyPair::generate_pkcs8(&ECDSA_P256_SHA256_ASN1_SIGNING,&rand)?; // pkcs8 format used for persistent storage
-        let key_pair = EcdsaKeyPair::from_pkcs8(&ECDSA_P256_SHA256_ASN1_SIGNING,pkcs8_bytes.as_ref()).map_err(|_| Unspecified)?;
+        let key_pair = EcdsaKeyPair::from_pkcs8(&ECDSA_P256_SHA256_ASN1_SIGNING,pkcs8_bytes.as_ref(), &rand).map_err(|_| Unspecified)?;
 
         // create a message and sign using the key pair
         const MESSAGE: &[u8] = b"hello, world";

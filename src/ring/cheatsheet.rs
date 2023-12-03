@@ -137,10 +137,8 @@ mod tests {
         let peer_public_key = UnparsedPublicKey::new(alg, peer_public_key);
         agreement::agree_ephemeral(my_private_key,
                         &peer_public_key,
-                        Unspecified,
                         |_shared_secret: &[u8]| {
                             // use the shared secret
-                            Ok(())
                         })
     }
 

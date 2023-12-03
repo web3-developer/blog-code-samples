@@ -17,6 +17,8 @@ trait Field<E>: AbelianGroup<Addition, E> + AbelianGroup<Multiplication, E> {
 struct PrimeField(u32);
 
 impl PrimeField {
+
+    #[allow(dead_code)]
     fn new(modulus: u32) -> Self {
         if !primes::is_prime(modulus.into()) {
             panic!("modulus is not a prime")

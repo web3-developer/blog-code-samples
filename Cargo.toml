@@ -7,6 +7,6 @@ edition = "2021"
 
 [dependencies]
 hex = "0.4.3"
-ring = "0.16.20"
-fluent-hash = "0.2.1"
+ring = "0.17.6"
+fluent-hash = "0.2.3"
 primes = "0.3.0"

@@ -43,14 +43,12 @@ mod tests {
 
         // run ECDH to agree on a shared secret
         agree_ephemeral(my_private_key,
-                        &peer_public_key,
-                        Unspecified, // error to return on failure
+                        &peer_public_key, // error to return on failure
                         |shared_secret: &[u8]| { // the result of the key agreement is passed to this lambda
                             println!("shared_secret = {}", hex::encode(shared_secret.as_ref())); // don't print this in production
 
                             // As recommended in RFC 7748 we should apply a KDF on the key material here before using in a real application
                             // We can return the derived key from the kdf here, otherwise we just return () if the key isn't needed outside this scope
-                            Ok(())
                         })
     }
 
@@ -102,13 +100,11 @@ mod tests {
         // run ECDH to agree on a shared secret
         agree_ephemeral(my_private_key,
                         &peer_public_key,
-                        Unspecified, // error to return on failure
                         |shared_secret: &[u8]| { // the result of the key agreement is passed to this lambda
                             println!("{}_shared_secret = {}", actor, hex::encode(shared_secret.as_ref())); // don't print this in production
 
                             // As recommended in RFC 7748 we should apply a KDF on the key material here before using in a real application
                             // We can return the derived key from the kdf here, otherwise we just return () if the key isn't needed outside this scope
-                            Ok(())
                         })
     }
 
